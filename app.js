@@ -18,23 +18,38 @@ var todoSchema = new mongoose.Schema({
 
 var Todo = mongoose.model("Todo", todoSchema);
 
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 app.get("/", function (req, res) {
     res.redirect("/todos");
 });
 
-app.get("/todos", function (req, res) {
-    Todo.find({}, function (err, todos) {
-        if (err) {
-            console.log(err);
-        } else {
-            if (req.xhr) {
-                res.json(todos);
-            } else {
-                res.render("index", {todos: todos});
 
+app.get("/todos", function(req, res){
+    if(req.query.keyword) {
+        const regex = new RegExp(escapeRegex(req.query.keyword), 'gi');
+        Todo.find({ text: regex }, function(err, todos){
+            if(err){
+                console.log(err);
+            } else {
+                res.json(todos);
             }
-        }
-    })
+        });
+    } else {
+        Todo.find({}, function(err, todos){
+            if(err){
+                console.log(err);
+            } else {
+                if(req.xhr) {
+                    res.json(todos);
+                } else {
+                    res.render("index", {todos: todos});
+                }
+            }
+        });
+    }
 });
 
 app.get("/todos/new", function (req, res) {
