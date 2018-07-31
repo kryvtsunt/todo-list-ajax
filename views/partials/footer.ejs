@@ -1,45 +1,70 @@
-		</div>
-		<script
-		  src="https://code.jquery.com/jquery-3.1.1.min.js"
-		  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-		  crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		<script type="application/javascript">
-//            $.get('/todos', function(data){
-//                debugger
-//            });
-//
-//            $('form').submit(function(e){
-//                e.preventDefault();
-//                var formData = $(this).serialize();
-//                $.post('/todos', formData, function(data){
-//                    console.log(data);
-//				})
-//			})
-//            $('form').submit(function(e){
-//                e.preventDefault();
-//                var formData = $(this).serialize();
-//                var formAction = $(this).attr('action');
-//                $.ajax({
-//					url: formAction,
-//					data: formData,
-//					type: 'PUT',
-//					success: function(data){
-//					    debugger
-//					}
-//				})
-//            })
-            $('form').submit(function(e){
-                e.preventDefault();
-                var formAction = $(this).attr('action');
-                $.ajax({
-                    url: formAction,
-                    type: 'DELETE',
-                    success: function(data){
-                        debugger
-                    }
-                })
-            })
-		</script>
-    </body>
+</div>
+<script
+        src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    //            $.get('/todos', function(data){
+    //                debugger
+    //            });
+    //
+    //            $('form').submit(function(e){
+    //                e.preventDefault();
+    //                var formData = $(this).serialize();
+    //                $.post('/todos', formData, function(data){
+    //                    console.log(data);
+    //				})
+    //			})
+    //            $('form').submit(function(e){
+    //                e.preventDefault();
+    //                var formData = $(this).serialize();
+    //                var formAction = $(this).attr('action');
+    //                $.ajax({
+    //					url: formAction,
+    //					data: formData,
+    //					type: 'PUT',
+    //					success: function(data){
+    //					    debugger
+    //					}
+    //				})
+    //            })
+    //            $('form').submit(function(e){
+    //                e.preventDefault();
+    //                var formAction = $(this).attr('action');
+    //                $.ajax({
+    //                    url: formAction,
+    //                    type: 'DELETE',
+    //                    success: function(data){
+    //                        debugger
+    //                    }
+    //                })
+    //            })
+    $('#new-todo-form').submit(function (e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.post('/todos', formData, function (data) {
+            $('#todo-list').append(
+                `
+                <li class="list-group-item">
+                    <span class="lead">
+                        ${data.text}
+                    </span>
+                    <div class="pull-right">
+                    <a href="/todos/${data._id}/edit" class="btn btn-sm btn-warning">Edit</a>
+                    <form style="display: inline" method="POST" action="/todos/${data._id}">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+                `
+            );
+            $('#new-todo-form').find('.form-control').val('');
+        })
+    })
+</script>
+</body>
 </html>
