@@ -65,12 +65,12 @@
             $('#new-todo-form').find('.form-control').val('');
         });
     });
-    $('#todo-list').on('click', '.edit-button', function(){
+    $('#todo-list').on('click', '.edit-button', function () {
         $(this).parent().siblings('.edit-todo-form').toggle();
     })
-    $('#todo-list').on('submit', '.edit-todo-form', function(e){
+    $('#todo-list').on('submit', '.edit-todo-form', function (e) {
         e.preventDefault();
-        var formData =$(this).serialize();
+        var formData = $(this).serialize();
         var actionUrl = $(this).attr('action');
         $originalItem = $(this).parent('.list-group-item');
         $.ajax({
@@ -78,7 +78,7 @@
             data: formData,
             type: 'PUT',
             originalItem: $originalItem,
-            success: function(data){
+            success: function (data) {
                 this.originalItem.html(
                     `
                     <form action="/todos/${data._id}" method="POST" class="edit-todo-form">
@@ -102,7 +102,27 @@
                 )
             }
         })
-    })
+    });
+
+    $('#todo-list').on('submit', '.delete-todo-form', function (e) {
+            e.preventDefault();
+            var confirmResponse = confirm('Are you sure ?');
+            if (confirmResponse) {
+                var actionUrl = $(this).attr('action');
+                $originalItem = $(this).closest('.list-group-item');
+                $.ajax({
+                    url: actionUrl,
+                    type: 'DELETE',
+                    itemToDelete: $originalItem,
+                    success: function (data) {
+                        this.itemToDelete.remove();
+                    }
+                })
+            } else {
+                $(this).find('button').blur();
+            }
+        }
+    )
 
 </script>
 </body>
